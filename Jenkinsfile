@@ -44,7 +44,7 @@ pipeline {
                 dir("${FRONTEND_DIR}") {
                     sh 'npm install'
                     sh 'npm run build'
-                    sh 'sudo cp -r dist/* /var/www/mern-frontend/'
+                    sh 'cp -r dist/* /var/www/mern-frontend/'
                 }
             }
         }
