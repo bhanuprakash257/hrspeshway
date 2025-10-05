@@ -2,8 +2,8 @@ pipeline {
     agent any
 
    environment {
-    APP_DIR = "/var/lib/jenkins/workspace/mern/server"
-    FRONTEND_DIR = "/var/lib/jenkins/workspace/mern/frontend"
+    APP_DIR = "/home/hrspeshway/server"
+    FRONTEND_DIR = "/home/hrspeshway/frontend"
     PM2_NAME = "backend"
 }
 
