@@ -1,11 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        APP_DIR = "/root/hrspeshway/server"  // backend folder
-        FRONTEND_DIR = "/root/hrspeshway/frontend" // frontend folder
-        PM2_NAME = "backend"
-    }
+   environment {
+    APP_DIR = "/var/lib/jenkins/workspace/devops/server"
+    FRONTEND_DIR = "/var/lib/jenkins/workspace/devops/frontend"
+    PM2_NAME = "backend"
+}
 
     stages {
         stage('Checkout') {
