@@ -7,27 +7,34 @@ import bcrypt from "bcrypt";
 
 const userRegister = async () => {
   try {
-    await connectToDatabase(); // now guaranteed to connect
+    const db = await connectToDatabase(); // make sure this returns the mongoose connection
 
     const existingUser = await User.findOne({ email: "admin@gmail.com" });
     if (existingUser) {
       console.log("Admin user already exists.");
-      return;
+    } else {
+      const hashPassword = await bcrypt.hash("admin", 10);
+
+      const newUser = new User({
+        name: "Admin",
+        email: "admin@gmail.com",
+        password: hashPassword,
+        role: "admin",
+      });
+
+      await newUser.save();
+      console.log("Admin user created successfully!");
     }
 
-    const hashPassword = await bcrypt.hash("admin", 10);
-
-    const newUser = new User({
-      name: "Admin",
-      email: "admin@gmail.com",
-      password: hashPassword,
-      role: "admin",
+    // ✅ Close DB connection and exit
+    db.connection.close(() => {
+      console.log("Database connection closed.");
+      process.exit(0);
     });
 
-    await newUser.save();
-    console.log("Admin user created successfully!");
   } catch (error) {
     console.error("Error creating admin user:", error);
+    process.exit(1); // exit with error
   }
 };
 
