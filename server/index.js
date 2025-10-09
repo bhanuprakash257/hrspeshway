@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import dotenv from "dotenv";
+import serverless from "serverless-http";  // ✅ Add this line
 import authRouter from "./routes/auth.js";
 import departmentRouter from "./routes/department.js";
 import employeeRouter from "./routes/employee.js";
@@ -29,16 +30,15 @@ app.use(cors({
 }));
 app.use(express.json());
 
-
 app.use("/uploads", express.static(path.resolve("public", "uploads")));
 app.use("/assets", express.static(path.resolve("assets")));
 
-// Health check endpoint for Render
+// Health check
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "Server is running" });
 });
 
-// Mount routes
+// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/department", departmentRouter);
 app.use("/api/employee", employeeRouter);
@@ -52,10 +52,14 @@ app.use("/api/payroll-template", payrollTemplateRouter);
 app.use("/api/payslip", payslipRouter);
 app.use("/api/birthdays", birthdayRouter);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  
-  // Initialize birthday wishes scheduler
-  initializeBirthdayScheduler();
-});
+// ✅ Export for AWS Lambda
+export const handler = serverless(app);
+
+// ✅ Optional: Local testing mode
+if (process.env.IS_LOCAL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running locally on port ${PORT}`);
+    initializeBirthdayScheduler();
+  });
+}
